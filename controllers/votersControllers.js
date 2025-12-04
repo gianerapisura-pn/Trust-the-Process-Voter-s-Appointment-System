@@ -1,4 +1,5 @@
-const { Voter } = require('../models');
+const { Voter, Appointment } = require('../models');
+const { v4: uuidv4 } = require('uuid');
 
 async function createVoter(req, res) {
   try {
@@ -7,8 +8,20 @@ async function createVoter(req, res) {
     if (!payload.first_name || !payload.last_name)
       return res.status(400).json({ message: 'first_name and last_name required' });
 
+    // Create voter
     const voter = await Voter.create(payload);
-    res.status(201).json(voter);
+
+    // Create appointment automatically
+    const appointmentCode = uuidv4().split('-')[0].toUpperCase();
+    const appointment = await Appointment.create({
+      applicant_id: voter.id,
+      slot_id: payload.slot_id || 1, // default slot
+      appointment_code: appointmentCode,
+      booking_datetime: new Date(),
+      status: 'Pending'
+    });
+
+    res.status(201).json({ voter, appointment });
 
   } catch (err) {
     console.error(err);

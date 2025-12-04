@@ -15,5 +15,5 @@ const Appointment = require('./appointment')(sequelize);
 Voter.hasMany(Appointment, { foreignKey: 'applicant_id', onDelete: 'CASCADE' });
 Appointment.belongsTo(Voter, { foreignKey: 'applicant_id' });
 
-// Export models and sequelize
+// Export models and sequelize instance
 module.exports = { sequelize, User, Voter, Appointment };

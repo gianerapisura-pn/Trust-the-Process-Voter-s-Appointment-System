@@ -8,7 +8,6 @@ const { sequelize } = require('./models');
 const authRoutes = require('./routes/auth');
 const votersRoutes = require('./routes/voters');
 const appointmentsRoutes = require('./routes/appointments');
-// const { authenticateToken } = require('./middleware/auth');
 
 const app = express();
 app.use(cors());

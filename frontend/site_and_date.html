@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Site & Date Selection - Voter’s Appointment System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+    <body class="site-date-page">
+
+ <header class="header">
+    <div class="logo-section">
+      <img src="mylogo.png" alt="Logo" class="logo">
+      <h1>TRUST THE PROCESS: VOTER’S APPOINTMENT SYSTEM</h1>
+    </div>
+  </header>
+
+  <div class="text-center mt-3">
+    <a href="appointment.html" class="nav-btn">
+  <i class="fa-solid fa-calendar-days"></i> Schedule an Appointment
+  </a>
+  <a href="manage_appointment.html" class="nav-btn">
+  <i class="fa-regular fa-clock"></i> Manage my Appointment
+  </a>
+    <a href="requirements.html" class="nav-btn">
+  <i class="fa-solid fa-clipboard-list"></i> List of Requirements
+  </a>
+  </div>
+
+  <div class="form-section">
+    <h4><strong>Schedule an Appointment</strong></h4>
+
+    <form id="siteDateForm">
+
+      <div class="row mt-4">
+   
+        <div class="col-md-6">
+
+          <label class="form-label">Site <span class="text-danger">*</span></label>
+        <select class="form-select mb-4" id="siteSelect" required 
+        style="width: 65%; height: 33px; border-radius: 15px; padding-left: 15px; font-size: 16px;">
+  <option value="">Select a Site</option>
+  <option value="Quezon City">Quezon City</option>
+  <option value="Makati City">Makati City</option>
+  <option value="Pasig City">Pasig City</option>
+</select>
+
+
+          <label class="form-label">DATE</label>
+          <div class="calendar-container">
+
+            <p><strong>Earliest available appointment:</strong> 24 November 2025</p>
+            <p class="text-danger">To the extent possible, additional slots are made regularly.</p>
+
+            <table>
+              <tr><th colspan="7">November 2025</th></tr>
+              <tr>
+                <th>Su</th><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th>
+              </tr>
+
+              <tr><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td><td>31</td><td>1</td></tr>
+              <tr><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr>
+              <tr><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td></tr>
+
+              <tr>
+                <td class="booked">16</td>
+                <td class="booked">17</td>
+                <td class="booked">18</td>
+                <td class="booked">19</td>
+                <td class="booked">20</td>
+                <td class="booked">21</td>
+                <td class="booked">22</td>
+              </tr>
+
+              <tr>
+                <td class="available">23</td>
+                <td class="available">24</td>
+                <td class="available">25</td>
+                <td class="available">26</td>
+                <td class="available">27</td>
+                <td class="available">28</td>
+                <td class="available">29</td>
+              </tr>
+
+              <tr><td>30</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr>
+            </table>
+
+            <p class="mt-2">
+              <span class="available">Available</span> |
+              <span class="booked">Fully Booked</span>
+            </p>
+
+          </div>
+        </div>
+
+    
+        <div class="col-md-6">
+          <label class="form-label">TIME</label>
+        <a href="select_time.html" 
+   class="time-btn text-decoration-none d-block text-center"
+   style="width: 85%; height: 40px; border-radius: 25px; padding-top: 9px; font-size: 16px;">
+  Please Select a Date
+</a>
+
+
+        </div>
+
+      </div>
+
+   
+      <div class="text-center mt-4">
+        <a href="gender_and_address.html" class="btn-action text-decoration-none">BACK</a>
+        <button type="submit" class="btn-action" formaction="select_time.html">CONTINUE</button>
+      </div>
+
+    </form>
+  </div>
+
+  <footer>
+    <div class="footer-section">
+      <div>
+        <strong>TRUST THE PROCESS: VOTER’S APPOINTMENT SYSTEM</strong><br>
+        123 Mabini Street, Barangay San Isidro, Quezon City, Metro Manila,<br>
+        1103, Philippines
+      </div>
+
+      <div>
+        <strong>CONTACT US</strong><br>
+        vas.concerns@ttp.gov.ph<br>
+        (02) 1234 - 5678
+      </div>
+
+      <div>
+        <strong>SITEMAP</strong><br>
+        <a href="index.html">HOME</a><br>
+        <a href="#">REQUIREMENTS</a><br>
+        <a href="appointment.html">SCHEDULE AN APPOINTMENT</a>
+      </div>
+    </div>
+  </footer>
+<script>
+  const siteDateForm = document.getElementById('siteDateForm');
+
+  siteDateForm.addEventListener('submit', function(event) {
+    const selectedSite = document.getElementById('siteSelect').value;
+    
+    if (!selectedSite) {
+      event.preventDefault();
+      alert('⚠️ Please select a site before continuing.');
+      return false;
+    }
+
+  
+    localStorage.setItem('selectedSite', selectedSite);
+  });
+</script>
+
+</body>
+</html>
