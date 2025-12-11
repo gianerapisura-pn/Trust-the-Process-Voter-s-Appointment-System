@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Trust the Process: Voter Appointment System
 
 Node.js/Express backend with a simple HTML/CSS/JS frontend for scheduling and managing voter registration appointments. Data is stored in MySQL via Sequelize. Admins can log in and approve/reject appointments.
