@@ -14,14 +14,16 @@ async function loadUserAppointments(containerId) {
 }
 
 function renderAppointmentRow(appt) {
+  const voter = appt.Voter || {};
+  const slot = appt.AppointmentSlot || {};
   return `
-    <div class="appointment-row" data-id="${appt.id}">
-      <div><strong>${appt.voter_name || appt.name}</strong></div>
-      <div>${appt.date} ${appt.time || ''}</div>
+    <div class="appointment-row" data-id="${appt.appointment_id}">
+      <div><strong>${voter.first_name || ''} ${voter.last_name || ''}</strong></div>
+      <div>${slot.slot_date || ''} ${slot.start_time || ''}</div>
       <div>Code: <code>${appt.appointment_code || ''}</code></div>
       <div>
-        <button onclick="viewAppointment('${appt.id}')">View</button>
-        <button onclick="cancelAppointmentHandler('${appt.id}')">Cancel</button>
+        <button onclick="viewAppointment('${appt.appointment_id}')">View</button>
+        <button onclick="cancelAppointmentHandler('${appt.appointment_id}')">Cancel</button>
       </div>
     </div>
   `;

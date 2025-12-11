@@ -5,9 +5,9 @@ module.exports = (sequelize) => {
     appointment_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     applicant_id: { type: DataTypes.INTEGER, allowNull: false },
     slot_id: { type: DataTypes.INTEGER, allowNull: false },
-    appointment_code: { type: DataTypes.STRING(15), unique: true },
+    appointment_code: { type: DataTypes.STRING(15), unique: true, allowNull: false },
     booking_datetime: { type: DataTypes.DATE, allowNull: false },
-    status: { type: DataTypes.STRING(20), allowNull: false }
+    status: { type: DataTypes.STRING(20), allowNull: false, defaultValue: 'Pending' }
   }, {
     tableName: 'appointment',
     timestamps: false

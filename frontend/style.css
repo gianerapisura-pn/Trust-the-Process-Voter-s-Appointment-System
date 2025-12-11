@@ -1,9 +1,25 @@
 /* ---------------------------
    GLOBAL
 ---------------------------- */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f2f2f2;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main, .page-main {
+  flex: 1 0 auto;
+}
+
+footer {
+  margin-top: auto;
 }
 
 /* ---------------------------
@@ -26,6 +42,16 @@ body {
 .logo {
   width: 80px;
   height: 80px;
+}
+
+.header-bar {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 }
 
 .nav-buttons {
@@ -132,6 +158,157 @@ footer {
 footer a {
   color: #000;
   text-decoration: none;
+}
+
+/* Ensure footer sticks to bottom when content is short */
+footer {
+  margin-top: auto !important;
+}
+
+/* ---------------------------
+   LAYOUT HELPERS (LOGIN / ADMIN)
+---------------------------- */
+.center-wrapper,
+.admin-login-wrapper {
+  flex: 1 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+}
+
+.card-panel {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  padding: 24px 28px;
+  width: 100%;
+  max-width: 700px;
+}
+
+.admin-shell {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 28px 16px 40px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.admin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.filter-input,
+.filter-select {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  font-size: 0.95rem;
+}
+
+.btn-ghost {
+  background: #38559f;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.stat-card .label {
+  font-size: 0.95rem;
+  color: #475569;
+}
+
+.stat-card .value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2a5c;
+}
+
+.table-wrapper {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th {
+  background: #f5f7fb;
+  font-weight: 700;
+  text-align: left;
+  color: #1f2937;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e6e8ef;
+  font-size: 0.95rem;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.action-btn {
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #fff;
+}
+
+.action-btn.approve {
+  background: #2e8b57;
+}
+
+.action-btn.reject {
+  background: #c53030;
+  margin-left: 6px;
+}
+
+.logout-btn {
+  background: #fff;
+  color: #38559f;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.header .logo-section h1 {
+  font-size: 1.8rem;
+  margin: 0;
 }
 
 /* ---------------------------
@@ -528,10 +705,10 @@ body {
       font-size: 1rem;
     }
 
-    .info-value {
-      font-size: 1rem;
-      margin-bottom: 18px;
-    }
+.info-value {
+  font-size: 1rem;
+  margin-bottom: 18px;
+}
 
     .appointment-code {
       font-weight: 700;
@@ -558,10 +735,44 @@ body {
       flex-wrap: wrap;
     }
 
-    footer a {
-      color: #000;
-      text-decoration: none;
-    }
+footer a {
+  color: #000;
+  text-decoration: none;
+}
+
+/* ---------------------------
+   HOME WELCOME TEXT
+---------------------------- */
+.welcome {
+  display: flex;
+  justify-content: center;
+  margin: 40px 16px 20px;
+}
+
+.welcome-text {
+  max-width: 1100px;
+  text-align: center;
+  font-size: 1.6rem;
+  line-height: 1.5;
+  font-weight: 700;
+}
+
+/* ---------------------------
+   FORM FIXES
+---------------------------- */
+.gender-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.gender-row .form-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
   
        /* ---------------------------
           REQUIREMENTS PAGE

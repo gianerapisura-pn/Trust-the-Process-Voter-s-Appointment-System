@@ -1,16 +1,13 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manage My Appointment - Voter’s Appointment System</title>
+  <title>Manage My Appointment - Voter's Appointment System</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" >
+  <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+</head>
 <body>
 
  <header class="header">
@@ -21,52 +18,27 @@
   </header>
 
   <div class="text-center mt-3">
-<a href="appointment.html" class="nav-btn">
-  <i class="fa-solid fa-calendar-days"></i> Schedule an Appointment
-  </a>
-  <a href="manage_appointment.html" class="nav-btn">
-  <i class="fa-regular fa-clock"></i> Manage my Appointment
-  </a>
+    <a href="appointment.html" class="nav-btn">
+      <i class="fa-solid fa-calendar-days"></i> Schedule an Appointment
+    </a>
+    <a href="manage_appointment.html" class="nav-btn">
+      <i class="fa-regular fa-clock"></i> Manage my Appointment
+    </a>
     <a href="requirements.html" class="nav-btn">
-  <i class="fa-solid fa-clipboard-list"></i> List of Requirements
-  </a>
+      <i class="fa-solid fa-clipboard-list"></i> List of Requirements
+    </a>
   </div>
 
   <div class="container mt-4 mb-4">
     <h3>Manage my Appointment</h3>
 
-    <div class="row">
-
-      <div class="col-md-6">
-        <div class="info-label">Name</div>
-        <div class="info-value">John S. Smith</div>
-
-        <div class="info-label">Email</div>
-        <div class="info-value">johnsmith@example.com</div>
-
-        <div class="info-label">Contact Number</div>
-        <div class="info-value">John S. Smith</div> <!-- like screenshot -->
+    <div class="row" id="details-container">
+      <div class="col-md-12">
+        <p>Loading appointment details...</p>
       </div>
-
-      <div class="col-md-6">
-        <div class="appointment-code">
-          APPOINTMENT CODE:
-          <span class="code-value">S2U9W72</span>
-        </div>
-
-        <div class="info-label mt-3">Date Of Appointment</div>
-
-        <div class="info-value">
-          Date: November 27, 2025<br>
-          Time: 9:30–10:30<br>
-          Site: Robinsons Manila, NCR
-        </div>
-      </div>
-
     </div>
   </div>
 
-  <!-- FOOTER -->
   <footer>
     <div class="footer-section">
       <div>
@@ -90,10 +62,56 @@
     </div>
   </footer>
 
+  <script>
+    (function() {
+      const container = document.getElementById('details-container');
+      try {
+        const stored = localStorage.getItem('currentAppointment');
+        if (!stored) throw new Error('No appointment loaded');
+        const appt = JSON.parse(stored);
+        const voter = appt.Voter || {};
+        const slot = appt.AppointmentSlot || {};
+        const site = (slot && slot.AppointmentSite) || {};
+
+        const fullName = [voter.first_name, voter.middle_name, voter.last_name].filter(Boolean).join(' ').trim();
+        const code = appt.appointment_code || '';
+        const date = slot.slot_date || '';
+        const time = (slot.start_time && slot.end_time) ? `${slot.start_time} - ${slot.end_time}` : (slot.start_time || '');
+        const siteLine = site.site_name ? `${site.site_name}${site.address ? ' - ' + site.address : ''}` : 'N/A';
+
+        container.innerHTML = `
+          <div class="col-md-6">
+            <div class="info-label">Name</div>
+            <div class="info-value">${fullName || 'N/A'}</div>
+
+            <div class="info-label">Email</div>
+            <div class="info-value">${voter.email_address || 'N/A'}</div>
+
+            <div class="info-label">Contact Number</div>
+            <div class="info-value">${voter.mobile_number || 'N/A'}</div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="appointment-code">
+              APPOINTMENT CODE:
+              <span class="code-value">${code}</span>
+            </div>
+
+            <div class="info-label mt-3">Date Of Appointment</div>
+
+            <div class="info-value">
+              Date: ${date || 'N/A'}<br>
+              Time: ${time || 'N/A'}<br>
+              Site: ${siteLine}
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        container.innerHTML = '<div class="col-md-12"><p>Unable to load appointment details.</p></div>';
+        console.error(err);
+      }
+    })();
+  </script>
+
 </body>
 </html>
-
-
-
-
-

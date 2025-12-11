@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin - Voter Appointments</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-bar">
+      <div class="logo-section">
+        <img src="mylogo.png" alt="Logo" class="logo">
+        <h1>TRUST THE PROCESS: VOTER'S APPOINTMENT SYSTEM</h1>
+      </div>
+      <button class="logout-btn" onclick="adminLogout()">Logout</button>
+    </div>
+  </header>
+
+  <main class="admin-shell">
+    <div class="admin-toolbar">
+      <input class="filter-input" type="text" id="search-input" placeholder="Search by name or code" />
+      <select class="filter-select" id="status-filter">
+        <option value="">All Status</option>
+        <option value="Pending">Pending</option>
+        <option value="Approved">Approved</option>
+        <option value="Rejected">Rejected</option>
+      </select>
+      <button class="btn-ghost" id="refresh-btn">Refresh</button>
+    </div>
+
+    <div class="stat-grid" id="stats">
+      Loading stats...
+    </div>
+
+    <div class="table-wrapper">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="appointments-body">
+          <tr><td colspan="5">Loading appointments...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-section">
+      <div>
+        <strong>TRUST THE PROCESS: VOTER'S APPOINTMENT SYSTEM</strong><br>
+        123 Mabini Street, Barangay San Isidro, Quezon City, Metro Manila,<br>
+        1103, Philippines
+      </div>
+      <div>
+        <strong>CONTACT US</strong><br>
+        vas.concerns@ttp.gov.ph<br>
+        (02) 1234 - 5678
+      </div>
+    </div>
+  </footer>
+
+  <script src="api.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    const searchInput = document.getElementById('search-input');
+    const statusFilter = document.getElementById('status-filter');
+    const refreshBtn = document.getElementById('refresh-btn');
+
+    function ensureLoggedIn() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = 'index-admin.html';
+      }
+    }
+
+    async function refreshData() {
+      ensureLoggedIn();
+      await loadAdminDashboard('stats');
+      const filters = {};
+      const status = statusFilter.value;
+      if (status) filters.status = status;
+      await loadAdminAppointments('appointments-body', filters);
+      applySearchFilter();
+    }
+
+    function applySearchFilter() {
+      const term = searchInput.value.toLowerCase().trim();
+      const rows = document.querySelectorAll('#appointments-body tr');
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(term) ? '' : 'none';
+      });
+    }
+
+    searchInput.addEventListener('input', applySearchFilter);
+    statusFilter.addEventListener('change', refreshData);
+    refreshBtn.addEventListener('click', refreshData);
+
+    window.addEventListener('DOMContentLoaded', refreshData);
+  </script>
+</body>
+</html>

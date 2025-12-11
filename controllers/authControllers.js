@@ -21,8 +21,9 @@ async function register(req, res) {
     });
 
     res.status(201).json({
-      user_id: user.user_id,
-      username: user.username
+      admin_id: user.admin_id,
+      username: user.username,
+      role: user.role,
     });
 
   } catch (err) {
@@ -41,7 +42,7 @@ async function login(req, res) {
     if (!match) return res.status(401).json({ message: 'Invalid credentials' });
 
     const token = jwt.sign(
-      { user_id: user.user_id, username: user.username, role: user.role },
+      { admin_id: user.admin_id, username: user.username, role: user.role },
       process.env.JWT_SECRET || 'dev-secret',
       { expiresIn: '8h' }
     );

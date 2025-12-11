@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Login - Voter Appointment System</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-bar">
+      <div class="logo-section">
+        <img src="mylogo.png" alt="Logo" class="logo">
+        <h1>TRUST THE PROCESS: VOTER'S APPOINTMENT SYSTEM</h1>
+      </div>
+    </div>
+  </header>
+
+  <main class="admin-login-wrapper">
+  <div class="card-panel" style="max-width: 520px;">
+    <h4><strong>Admin Login</strong></h4>
+    <form id="admin-login-form">
+      <div class="mb-3">
+        <label class="form-label"><i class="fa-solid fa-user"></i> Username</label>
+        <input type="text" class="form-control" name="username" placeholder="Enter Username" required>
+      </div>
+      <div class="mb-4">
+        <label class="form-label"><i class="fa-solid fa-lock"></i> Password</label>
+        <input type="password" class="form-control" name="password" placeholder="Enter password" required>
+      </div>
+      <div class="text-center">
+        <button type="submit" class="btn-action">Login</button>
+      </div>
+      <div id="login-error" class="error mt-2 text-center"></div>
+    </form>
+  </div>
+  </main>
+
+  <footer>
+    <div class="footer-section">
+      <div>
+        <strong>TRUST THE PROCESS: VOTER'S APPOINTMENT SYSTEM</strong><br>
+        123 Mabini Street, Barangay San Isidro, Quezon City, Metro Manila,<br>
+        1103, Philippines
+      </div>
+
+      <div>
+        <strong>CONTACT US</strong><br>
+        vas.concerns@ttp.gov.ph<br>
+        (02) 1234 - 5678
+      </div>
+    </div>
+  </footer>
+
+  <script src="api.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    const form = document.getElementById('admin-login-form');
+    const errorBox = document.getElementById('login-error');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorBox.textContent = '';
+      const data = Object.fromEntries(new FormData(form).entries());
+      try {
+        await adminLogin(data.username, data.password);
+        window.location.href = 'admin.html';
+      } catch (err) {
+        errorBox.textContent = 'Invalid credentials';
+      }
+    });
+  </script>
+</body>
+</html>

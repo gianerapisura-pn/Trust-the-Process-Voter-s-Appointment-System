@@ -37,16 +37,16 @@
     <form id="infoForm">
       <div class="row mb-3 align-items-center">
         <div class="col-md-4">
-          <label class="form-label">Date of Birth *</label>
-          <input type="date" class="form-control" id="dob" required>
-        </div>
-        <div class="col-md-4">
           <label class="form-label">Gender *</label><br>
-          <div>
-            <input type="radio" id="male" name="gender" value="Male" required>
-            <label for="male">Male</label>
-            <input type="radio" id="female" name="gender" value="Female" required style="margin-left: 20px;">
-            <label for="female">Female</label>
+          <div class="gender-row">
+            <div class="form-check m-0">
+              <input class="form-check-input" type="radio" id="male" name="gender" value="Male" required>
+              <label class="form-check-label" for="male">Male</label>
+            </div>
+            <div class="form-check m-0">
+              <input class="form-check-input" type="radio" id="female" name="gender" value="Female" required>
+              <label class="form-check-label" for="female">Female</label>
+            </div>
           </div>
         </div>
         <div class="col-md-4">
@@ -111,7 +111,6 @@
 document.getElementById("infoForm").addEventListener("submit", function(event) {
     event.preventDefault();
 
-    const dob = document.getElementById("dob").value.trim();
     const gender = document.querySelector("input[name='gender']:checked");
     const nationality = document.getElementById("nationality").value.trim();
     const address = document.getElementById("address").value.trim();
@@ -119,13 +118,12 @@ document.getElementById("infoForm").addEventListener("submit", function(event) {
     const mobile = document.getElementById("mobile").value.trim();
     const email = document.getElementById("email").value.trim();
 
-    if (!dob || !gender || !nationality || !address || !zip || !mobile || !email) {
+    if (!gender || !nationality || !address || !zip || !mobile || !email) {
         alert("⚠️ Please complete all required fields before continuing.");
         return;
     }
 
     // Save the data if needed
-    localStorage.setItem("dob", dob);
     localStorage.setItem("gender", gender.value);
     localStorage.setItem("nationality", nationality);
     localStorage.setItem("address", address);

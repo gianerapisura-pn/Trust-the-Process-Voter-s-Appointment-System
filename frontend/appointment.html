@@ -38,15 +38,15 @@
         <input type="text" class="form-control" id="firstName" placeholder="First Name" required>
       </div>
       <div class="col-md-4">
-        <label class="form-label">&nbsp;</label>
-        <input type="text" class="form-control" id="middleName" placeholder="Middle Name (Optional)">
+        <label for="middleName" class="form-label">Middle Name (Optional)</label>
+        <input type="text" class="form-control" id="middleName" placeholder="Middle Name">
       </div>
     </div>
 
     <div class="row mb-4">
       <div class="col-md-6">
         <label for="suffix" class="form-label">Suffix (Optional)</label>
-        <input type="text" class="form-control" id="suffix">
+        <input type="text" class="form-control" id="suffix" placeholder="Suffix">
       </div>
       <div class="col-md-6">
         <label for="birthday" class="form-label">Birthday *</label>
@@ -85,7 +85,7 @@
 <script src="api.js"></script>
 <script src="voters.js"></script>
 <script>
-document.getElementById('personalForm').addEventListener('submit', async function(event) {
+document.getElementById('personalForm').addEventListener('submit', function(event) {
   event.preventDefault();
 
   const data = {
@@ -93,8 +93,7 @@ document.getElementById('personalForm').addEventListener('submit', async functio
     last_name: document.getElementById('lastName').value.trim(),
     middle_name: document.getElementById('middleName').value.trim(),
     suffix: document.getElementById('suffix').value.trim(),
-    birthday: document.getElementById('birthday').value,
-    slot_id: 1 // default slot
+    birthday: document.getElementById('birthday').value
   };
 
   if (!data.first_name || !data.last_name || !data.birthday) {
@@ -102,17 +101,9 @@ document.getElementById('personalForm').addEventListener('submit', async functio
     return;
   }
 
-  console.log('Submitting data:', data);
-
-  try {
-    const response = await submitVoterForm(data);
-    console.log('Response from backend:', response);
-    localStorage.setItem('currentVoter', JSON.stringify(response));
-    window.location.href = "gender_and_address.html";
-  } catch (err) {
-    alert('Failed to save data. Please try again.');
-    console.error(err);
-  }
+  // Store for later; final step will submit to backend with full details
+  localStorage.setItem('personalInfo', JSON.stringify(data));
+  window.location.href = "gender_and_address.html";
 });
 </script>
 
