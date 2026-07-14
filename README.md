@@ -121,6 +121,22 @@ Main tables:
 - `appointment`
 - `admin_user`
 
+## Testing
+
+Run the integration smoke test while MySQL or MariaDB is available:
+
+```bash
+npm test
+```
+
+Check production dependencies for known security advisories:
+
+```bash
+npm run audit
+```
+
+GitHub Actions runs both checks automatically for pull requests and updates to `main` using a temporary MariaDB service.
+
 ## Troubleshooting
 
 - **Unknown database:** Import `database/Sprint1_DatabaseCode.sql` or verify `DB_NAME`.
