@@ -20,6 +20,6 @@ router.put('/:id', authenticateToken, updateAppointment);
 
 router.put('/:id/status', authenticateToken, requireRole(['admin', 'Admin', 'SuperAdmin', 'Staff']), updateStatus);
 
-router.delete('/:id', authenticateToken, deleteAppointment);
+router.delete('/:id', optionalAuth, deleteAppointment);
 
 module.exports = router;

@@ -94,6 +94,7 @@ document.getElementById('manageForm').addEventListener('submit', async (e) => {
       container.innerHTML = '<p>No appointments found.</p>';
       return;
     }
+    sessionStorage.setItem('appointmentSearchResults', JSON.stringify(appointments));
     container.innerHTML = appointments.map(renderAppointmentRow).join('');
   } catch (err) {
     alert('Failed to fetch appointments.');

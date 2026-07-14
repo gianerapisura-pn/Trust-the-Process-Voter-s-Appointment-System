@@ -48,40 +48,16 @@
           <label class="form-label">DATE</label>
           <div class="calendar-container">
 
-            <p><strong>Earliest available appointment:</strong> 24 November 2025</p>
+            <p><strong>Earliest available appointment:</strong> <span id="earliestAvailableDate">Loading...</span></p>
             <p class="text-danger">To the extent possible, additional slots are made regularly.</p>
 
             <table>
-              <tr><th colspan="7">November 2025</th></tr>
+              <tr><th colspan="7" id="calendarMonth"></th></tr>
               <tr>
                 <th>Su</th><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th>
               </tr>
 
-              <tr><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td><td>31</td><td>1</td></tr>
-              <tr><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr>
-              <tr><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td></tr>
-
-              <tr>
-                <td class="booked">16</td>
-                <td class="booked">17</td>
-                <td class="booked">18</td>
-                <td class="booked">19</td>
-                <td class="booked">20</td>
-                <td class="booked">21</td>
-                <td class="booked">22</td>
-              </tr>
-
-              <tr>
-                <td class="available">23</td>
-                <td class="available">24</td>
-                <td class="available">25</td>
-                <td class="available">26</td>
-                <td class="available">27</td>
-                <td class="available">28</td>
-                <td class="available">29</td>
-              </tr>
-
-              <tr><td>30</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr>
+              <tbody id="calendarDays"></tbody>
             </table>
 
             <p class="mt-2">
@@ -139,6 +115,36 @@
   const siteDateForm = document.getElementById('siteDateForm');
   const siteSelect = document.getElementById('siteSelect');
 
+  function renderCurrentCalendar() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    document.getElementById('earliestAvailableDate').textContent = today.toLocaleDateString('en-PH', {
+      day: 'numeric', month: 'long', year: 'numeric'
+    });
+    document.getElementById('calendarMonth').textContent = today.toLocaleDateString('en-PH', {
+      month: 'long', year: 'numeric'
+    });
+
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const cells = Array(firstDay).fill('<td></td>');
+
+    for (let day = 1; day <= daysInMonth; day += 1) {
+      const date = new Date(year, month, day);
+      const state = date < today ? 'booked' : 'available';
+      cells.push(`<td class="${state}">${day}</td>`);
+    }
+    while (cells.length % 7 !== 0) cells.push('<td></td>');
+
+    const rows = [];
+    for (let index = 0; index < cells.length; index += 7) {
+      rows.push(`<tr>${cells.slice(index, index + 7).join('')}</tr>`);
+    }
+    document.getElementById('calendarDays').innerHTML = rows.join('');
+  }
+
   async function loadSites() {
     try {
       const sites = await apiFetch('/sites');
@@ -176,6 +182,7 @@
     localStorage.setItem('selectedSiteAddress', opt ? opt.getAttribute('data-address') : '');
   });
 
+  renderCurrentCalendar();
   loadSites();
 </script>
 

@@ -49,11 +49,9 @@
     class="form-control" 
     id="appointmentDate" 
     required
-    min="2025-11-23" 
-    max="2025-11-29"
   >
-  <small class="text-muted d-block mt-2">
-    Earliest available appointment: 24 November 2025
+  <small class="text-muted d-block mt-2" id="earliestAppointmentText">
+    Earliest available appointment: loading...
   </small>
 </div>
 
@@ -105,6 +103,26 @@
   <script>
   window.addEventListener('DOMContentLoaded', async () => {
     const siteSelect = document.getElementById('siteSelect');
+    const appointmentDate = document.getElementById('appointmentDate');
+    const earliestAppointmentText = document.getElementById('earliestAppointmentText');
+
+    const toLocalDateValue = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const latestBookingDate = new Date(today);
+    latestBookingDate.setDate(latestBookingDate.getDate() + 90);
+    appointmentDate.min = toLocalDateValue(today);
+    appointmentDate.max = toLocalDateValue(latestBookingDate);
+    appointmentDate.value = toLocalDateValue(today);
+    earliestAppointmentText.textContent = `Earliest available appointment: ${today.toLocaleDateString('en-PH', {
+      day: 'numeric', month: 'long', year: 'numeric'
+    })}`;
 
     // Load sites from backend to keep dropdown in sync with DB
     try {
@@ -209,5 +227,4 @@
 
 </body>
 </html>
-
 

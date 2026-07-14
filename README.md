@@ -1,95 +1,132 @@
 # Trust the Process: Voter Appointment System
 
-Node.js/Express backend with a simple HTML/CSS/JS frontend for scheduling and managing voter registration appointments. Data is stored in MySQL via Sequelize. Admins can log in and approve/reject appointments.
+A voter registration appointment system built with Node.js, Express, MySQL/MariaDB, Sequelize, and vanilla HTML, CSS, and JavaScript.
 
-## Tech Stack
-- Backend: Node.js, Express, Sequelize, JWT (admin auth)
-- DB: MySQL/MariaDB
-- Frontend: Static HTML/CSS/JS served by Express
+## Requirements
+
+- Node.js and npm
+- MySQL or MariaDB (XAMPP is supported)
+- A free local port for the Express server
 
 ## Project Structure
-```
+
+```text
 backend/
-├─ controllers/        # request handlers (voters, appointments, admin)
-├─ routes/             # express routers (voters.js, appointments.js, admin.js, auth.js, sites.js, slots.js)
-├─ models/             # Sequelize models (voter_applicant, appointment, appointment_site, appointment_slot, admin_user)
-├─ middleware/         # auth middleware (JWT)
-├─ frontend/           # HTML, CSS, JS assets (public-facing + admin UI)
-├─ database/           # SQL scripts (e.g., Sprint1_DatabaseCode.sql)
-├─ server.js           # app entrypoint and bootstrap
-└─ .env.example        # sample env vars
+|-- controllers/     Request handlers
+|-- database/        Initial database setup script
+|-- frontend/        HTML, CSS, JavaScript, and images
+|-- middleware/      JWT authentication middleware
+|-- models/          Sequelize models and relationships
+|-- routes/          API routes
+|-- .env.example     Environment configuration template
+|-- package.json     Dependencies and npm scripts
+`-- server.js        Application entry point
 ```
 
-## Environment
-Copy `.env.example` to `.env` and fill in:
+## Setup
+
+1. Install the dependencies:
+
+   ```bash
+   npm install
+   ```
+
+2. Start MySQL or MariaDB.
+
+3. Import `database/Sprint1_DatabaseCode.sql` once to create the `StudentVoterAppointments` database and its initial tables. Skip this step if the database is already configured.
+
+4. Copy `.env.example` to a new file named `.env`:
+
+   ```powershell
+   Copy-Item .env.example .env
+   ```
+
+5. Update `.env` with the database credentials and secrets for your computer:
+
+   ```env
+   DB_NAME=StudentVoterAppointments
+   DB_USER=root
+   DB_PASS=
+   DB_HOST=localhost
+   DB_PORT=3306
+   PORT=3000
+   JWT_SECRET=replace-with-a-long-random-secret
+   ADMIN_USER=admin
+   ADMIN_EMAIL=admin@example.com
+   ADMIN_PASS=replace-with-a-strong-admin-password
+   ```
+
+6. Start the application:
+
+   ```bash
+   npm start
+   ```
+
+   For development with automatic restarts:
+
+   ```bash
+   npm run dev
+   ```
+
+7. Open `http://localhost:3000` in a browser. Always open the frontend through the Express server; do not open the HTML files directly.
+
+## Using a Different Port
+
+If port `3000` is unavailable, set any free port in `.env`:
+
+```env
+PORT=8080
 ```
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=StudentVoterAppointments
-DB_USER=youruser
-DB_PASS=yourpass
-JWT_SECRET=yourjwtsecret
-ADMIN_USER=admin
-ADMIN_PASS=admin123
-PORT=3000
-```
 
-## Setup & Run
-1) Install deps: `npm install`
-2) Start MySQL and ensure `StudentVoterAppointments` exists (import `database/Sprint1_DatabaseCode.sql` if needed).
-3) Start dev server: `npm run dev` (nodemon) or `node server.js`
-4) Open frontend pages via `http://localhost:3000/` (HTML files are served statically).
+Then open `http://localhost:8080`. The frontend uses the relative `/api` path, so no frontend code changes are required when the port changes.
 
-Health check: `GET http://localhost:3000/health`
+## Main Features
 
-## Core Flows
-### Voter booking
-1. Personal info → contact info → site/date/time selection → confirmation.
-2. Backend creates `voter_applicant`, `appointment_slot` (if needed), and `appointment` with `appointment_code`.
-3. Confirmation page shows the code and allows downloading details (txt).
-### Manage appointment (voter)
-- Lookup by code + email; view or cancel (if route enabled).
-### Admin
-1. Login: `POST /api/auth/login` → receives JWT.
-2. Stats: `GET /api/admin/stats` (token required).
-3. List appointments: `GET /api/appointments` (token required).
-4. Update status: `PUT /api/appointments/:id/status` with `{ status: Approved|Rejected|Pending|Confirmed|Cancelled }` (token required).
+- Multi-step voter appointment booking
+- Date selection based on the current day with a 90-day booking window
+- Appointment code generation and downloadable appointment details
+- Appointment lookup and cancellation using the appointment code and email address
+- Admin login, dashboard statistics, appointment filtering, and status updates
+- JWT protection for administrative routes
 
-## Key Endpoints (high level)
-- Public:
-  - `POST /api/voters` (create applicant + appointment, with site/slot info)
-  - `GET /api/appointments?code=...&email=...` (fetch appointment)
-- Admin (JWT):
-  - `POST /api/auth/login`
-  - `GET /api/admin/stats`
-  - `GET /api/appointments`
-  - `PUT /api/appointments/:id/status`
-- Reference data:
-  - `GET /api/sites`
-  - `GET /api/slots` (if exposed)
+## Main API Endpoints
 
-## Models (summary)
-- `voter_applicant`: personal/contact info
-- `appointment_site`: site_name, address, is_active
-- `appointment_slot`: site_id, slot_date, start_time, end_time, max_capacity, bookings_count
-- `appointment`: applicant_id, slot_id, appointment_code, booking_datetime, status
-- `admin_user`: admin_id (PK), username, password_hash, role
+Public endpoints:
 
-## Frontend Pages (selected)
-- `index.html`: landing
-- `appointment.html`, `gender_and_address.html`, `site_and_date.html`, `select_time.html`, `appointment_code.html`: booking flow
-- `manage_appointment.html`: voter lookup/cancel
-- `index-admin.html`, `admin.html`: admin login and dashboard
+- `GET /health`
+- `GET /api/sites`
+- `GET /api/slots`
+- `POST /api/voters`
+- `GET /api/appointments?appointment_code=...&email_address=...`
+- `DELETE /api/appointments/:id?appointment_code=...&email_address=...`
+- `POST /api/auth/login`
 
-## Running in Postman (smoke test)
-1) `GET /health`
-2) `POST /api/auth/login` (admin creds) → copy token
-3) `POST /api/voters` with full payload (unique email) → get `appointment_code`
-4) `GET /api/appointments?code=...&email=...`
-5) `PUT /api/appointments/:id/status` with Bearer token
+Protected endpoints require a valid Bearer token:
 
-## Notes
-- Keep port 3000 free (`netstat`/`taskkill` if needed).
-- Use new emails to avoid unique conflicts.
-- If DB errors appear, re-check `.env` and that MySQL is running. 
+- `GET /api/admin/stats`
+- `GET /api/appointments`
+- `GET /api/appointments/:id`
+- `PUT /api/appointments/:id/status`
+- `GET /api/voters`
 
+## Database
+
+The application uses one database named `StudentVoterAppointments`. The file `database/Sprint1_DatabaseCode.sql` is the initial setup script, not a second database. Sequelize checks and synchronizes the tables when the server starts, but the database itself must already exist.
+
+Main tables:
+
+- `voter_applicant`
+- `appointment_site`
+- `appointment_slot`
+- `appointment`
+- `admin_user`
+
+## Troubleshooting
+
+- **Unknown database:** Import `database/Sprint1_DatabaseCode.sql` or verify `DB_NAME`.
+- **Access denied:** Check `DB_USER` and `DB_PASS` in `.env`.
+- **Port already in use:** Change `PORT` in `.env` and open the matching browser URL.
+- **Failed to fetch:** Make sure the Express server is running and access the site through its `http://localhost:<PORT>` address.
+- **Admin login fails:** Check the `ADMIN_USER` and `ADMIN_PASS` used when the admin account was first created.
+
+Do not commit `.env` because it contains machine-specific credentials and secrets.

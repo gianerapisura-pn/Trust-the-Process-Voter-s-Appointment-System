@@ -121,13 +121,36 @@ async function updateStatus(req, res) {
 
 async function deleteAppointment(req, res) {
   try {
-    const appt = await Appointment.findByPk(req.params.id);
+    const appt = await Appointment.findByPk(req.params.id, { include: [Voter] });
     if (!appt) return res.status(404).json({ message: 'Appointment not found' });
 
     const slot = await AppointmentSlot.findByPk(appt.slot_id);
+
+    if (!req.user) {
+      const { appointment_code, email_address } = req.query;
+      const voterEmail = appt.Voter && appt.Voter.email_address;
+      const verified = appointment_code === appt.appointment_code
+        && email_address
+        && voterEmail
+        && email_address.toLowerCase() === voterEmail.toLowerCase();
+
+      if (!verified) {
+        return res.status(403).json({ message: 'Appointment code and email do not match' });
+      }
+      if (appt.status === 'Cancelled') {
+        return res.json({ message: 'Appointment is already cancelled', appointment: appt });
+      }
+
+      await appt.update({ status: 'Cancelled' });
+      if (slot) {
+        await slot.update({ bookings_count: Math.max(0, slot.bookings_count - 1) });
+      }
+      return res.json({ message: 'Appointment cancelled successfully', appointment: appt });
+    }
+
     await appt.destroy();
 
-    if (slot) {
+    if (slot && appt.status !== 'Cancelled') {
       await slot.update({ bookings_count: Math.max(0, slot.bookings_count - 1) });
     }
 
