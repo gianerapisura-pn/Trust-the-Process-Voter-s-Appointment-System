@@ -9,6 +9,33 @@ async function createVoter(req, res) {
       return res.status(400).json({ message: 'first_name, last_name, and birthday are required' });
     }
 
+    if (payload.email_address && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email_address)) {
+      return res.status(400).json({ message: 'A valid email address is required' });
+    }
+
+    if (payload.slot_date) {
+      const toLocalDateValue = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const latestBookingDate = new Date(today);
+      latestBookingDate.setDate(latestBookingDate.getDate() + 90);
+
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(payload.slot_date)
+        || payload.slot_date < toLocalDateValue(today)
+        || payload.slot_date > toLocalDateValue(latestBookingDate)) {
+        return res.status(400).json({ message: 'Appointment date must be between today and 90 days from today' });
+      }
+    }
+
+    if (payload.start_time && payload.end_time && payload.start_time >= payload.end_time) {
+      return res.status(400).json({ message: 'Appointment end time must be later than the start time' });
+    }
+
     if (!payload.gender) payload.gender = 'Male';
     if (!payload.nationality) payload.nationality = 'Not provided';
     if (!payload.home_address) payload.home_address = 'Not provided';
@@ -25,6 +52,13 @@ async function createVoter(req, res) {
       }
       if (!site && payload.site_name) {
         site = await AppointmentSite.findOne({ where: { site_name: payload.site_name } });
+      }
+
+      if (!site) {
+        return res.status(404).json({ message: 'Appointment site not found' });
+      }
+      if (!site.is_active) {
+        return res.status(400).json({ message: 'Selected appointment site is not active' });
       }
       if (!site && payload.site_name) {
         site = await AppointmentSite.create({

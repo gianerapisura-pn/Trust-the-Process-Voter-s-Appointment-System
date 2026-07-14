@@ -1,5 +1,5 @@
 // api.js
-const BASE_URL = 'http://localhost:3000/api';
+const BASE_URL = '/api';
 
 async function apiFetch(path, options = {}) {
   const url = `${BASE_URL}${path}`;

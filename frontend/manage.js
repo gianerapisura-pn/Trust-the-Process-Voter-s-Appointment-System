@@ -31,7 +31,9 @@ function renderAppointmentRow(appt) {
 
 async function viewAppointment(id) {
   try {
-    const appt = await getAppointment(id);
+    const cached = JSON.parse(sessionStorage.getItem('appointmentSearchResults') || '[]');
+    const appt = cached.find(item => String(item.appointment_id) === String(id));
+    if (!appt) throw new Error('Appointment not found in the verified search results');
     localStorage.setItem('currentAppointment', JSON.stringify(appt));
     window.location.href = 'manage_appointment_details.html';
   } catch (err) {
@@ -42,10 +44,21 @@ async function viewAppointment(id) {
 async function cancelAppointmentHandler(id) {
   if (!confirm('Are you sure you want to cancel this appointment?')) return;
   try {
-    await cancelAppointment(id);
+    const cached = JSON.parse(sessionStorage.getItem('appointmentSearchResults') || '[]');
+    const appt = cached.find(item => String(item.appointment_id) === String(id));
+    const voter = appt && appt.Voter ? appt.Voter : {};
+    if (!appt || !appt.appointment_code || !voter.email_address) {
+      throw new Error('Missing appointment verification details');
+    }
+    await cancelAppointment(id, {
+      appointment_code: appt.appointment_code,
+      email_address: voter.email_address,
+    });
+    appt.status = 'Cancelled';
+    sessionStorage.setItem('appointmentSearchResults', JSON.stringify(cached));
+    const row = document.querySelector(`.appointment-row[data-id="${id}"]`);
+    if (row) row.remove();
     alert('Appointment cancelled');
-    const container = document.querySelector('.appointments-container');
-    if (container) loadUserAppointments(container.id);
   } catch (err) {
     alert('Failed to cancel appointment.');
   }

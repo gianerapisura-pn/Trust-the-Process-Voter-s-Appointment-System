@@ -19,8 +19,10 @@ async function listAppointments(query = {}) {
   return await apiFetch(`/appointments${q}`, { headers: getAuthHeaders() });
 }
 
-async function cancelAppointment(appointmentId) {
-  return await apiFetch(`/appointments/${encodeURIComponent(appointmentId)}`, {
+async function cancelAppointment(appointmentId, verification = {}) {
+  const query = new URLSearchParams(verification).toString();
+  const path = `/appointments/${encodeURIComponent(appointmentId)}${query ? `?${query}` : ''}`;
+  return await apiFetch(path, {
     method: 'DELETE',
     headers: getAuthHeaders(),
   });
